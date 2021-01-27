@@ -412,14 +412,14 @@ bool ReleaseSysResource() {
 
 void SetEncoderUnit() {
     short ret = 0;
-    short res = 0;
+//    short res = 0;
     
     WORD MyCardNo = 0;
     WORD Mymode = 3;
     
     for (int i = 1; i <= gAxisNum; i++) {
         ret=smc_set_counter_inmode(MyCardNo,i,Mymode);//设置编码器计数方式
-        res=smc_set_encoder_unit(MyCardNo,i,100); //设置编码值为 100
+//        res=smc_set_encoder_unit(MyCardNo,i,100); //设置编码值为 100
     }
 }
 
