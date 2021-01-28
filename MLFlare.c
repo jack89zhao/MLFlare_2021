@@ -2727,6 +2727,7 @@ static bool SetOutputBitState(MLOutSensor outbit, MLLevel level)
                 break;
         }
     }
+    Logger(MLLogInfo, "<%s> set Bit[%d] to %d [result: %d]", __func__, outbit, level, flag);
     
     return flag;
 }
