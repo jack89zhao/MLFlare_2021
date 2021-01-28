@@ -65,7 +65,7 @@ int JKConnectCL200A(const char* portname, const char *receptor) {
 
 /* Close the CL200A serial port */
 int JKDisconnectCL200A(void) {
-    int rtn = -1;
+    int rtn = 0;
     
     if (isConnected) {
         rtn = serial_close(port);

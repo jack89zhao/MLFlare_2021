@@ -592,7 +592,7 @@ short SetFloatRegisterValue(DWORD valueIndex, float value) {
 void SetSingleAxisParamInRegister(MLAxis axis, AxisParamIndex api, float value) {
     short rc = SetFloatRegisterValue(AxisParamStartIndex+(axis-MLAxisRotation)*AxisParamLengthInRegister+api, value);
     if(rc!=0) {
-        Logger(MLLogError, "<SetSingleAxisParamInRegister>: fail to set parameter(%d) value(%d) for axis %d", api, value, axis);
+        Logger(MLLogError, "<SetSingleAxisParamInRegister>: fail to set parameter(%d) value(%d) for axis %d\n", api, value, axis);
     } else {
         InitializeCalibrationData();
     }
@@ -602,7 +602,7 @@ double GetSingleAxisParamInRegister(MLAxis axis, AxisParamIndex api) {
     float value;
     short rc = GetFloatRegisterValue(AxisParamStartIndex+(axis-MLAxisRotation)*AxisParamLengthInRegister+api, &value);
     if(rc!=0) {
-        Logger(MLLogError, "<GetSingleAxisParamInRegister>: fail to get parameter(%d) for axis %d", api, axis);
+        Logger(MLLogError, "<GetSingleAxisParamInRegister>: fail to get parameter(%d) for axis %d\n", api, axis);
     }
     return value;
 }
@@ -610,7 +610,7 @@ double GetSingleAxisParamInRegister(MLAxis axis, AxisParamIndex api) {
 void SetAxisParamInRegister(MLAxis axis, float *axisParams) {
     short rc = smc_set_persistent_reg_float(gHandle, AxisParamStartIndex+(axis-MLAxisRotation)*AxisParamLengthInRegister, AxisParamLengthInRegister, axisParams);
     if(rc!=0) {
-        Logger(MLLogError, "<SetAxisParamInRegister>: fail to set parameters of axis %d", axis);
+        Logger(MLLogError, "<SetAxisParamInRegister>: fail to set parameters of axis %d\n", axis);
     }
 }
 
@@ -618,7 +618,7 @@ void GetAxisParamInRegister(MLAxis axis, float *axisParams) {
 //    axisParams = malloc(sizeof(float)*AxisParamLengthInRegister);
     short rc = smc_get_persistent_reg_float(gHandle, AxisParamStartIndex+(axis-MLAxisRotation)*AxisParamLengthInRegister, AxisParamLengthInRegister, axisParams);
     if(rc!=0) {
-        Logger(MLLogError, "<GetAxisParamInRegister>: fail to get parameters of axis %d", axis);
+        Logger(MLLogError, "<GetAxisParamInRegister>: fail to get parameters of axis %d\n", axis);
     }
 }
 
@@ -654,7 +654,7 @@ void SetCalibrationBaseData(int mode) {
         smc_get_encoder_unit(0, i, &currentAxesPos[i-1]);
         int rc = smc_set_persistent_reg_float(0, BaseCalibrationDataStartIndex+i-1, 1, (float *)&currentAxesPos[i-1]);
         if(rc!=0) {
-            Logger(MLLogError, "<SetCalibration>: fail to set Base Calibration data(%.0f) for axis %d", currentAxesPos[i-1], i);
+            Logger(MLLogError, "<SetCalibration>: fail to set Base Calibration data(%.0f) for axis %d\n", currentAxesPos[i-1], i);
         }
     }
 }
@@ -4772,13 +4772,14 @@ void LuxmeterMeasure(double measureValues[], int size, int timeout) {
 }
 
 bool MoveBackLuxmeter(void) {
-    bool flag = false;
+    bool flag = true;
     
     gIsTesting = true;
     SetBitState(MLOutIlluminanceLight,MLHigh);
 //    SetBitState(MLOutCylinderHome, MLLow);
 //    while (lightTestReadyed) { usleep(500000); }   // check state every 500ms.
     if (!SetOutputBitState(MLOutCylinderHome, MLLow)) {
+        flag = false;
         Logger(MLLogError, "<%s>: Fail to move luxmeter to home poistion.\n", __func__);
     }
     DoorOpen();
