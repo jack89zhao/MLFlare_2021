@@ -171,7 +171,7 @@ void ResetAllAxis(bool pthread);
 // ========================= private method ============================
 
 char* GetLibraryVersion(void) {
-    return "v1.2.8";
+    return "v1.2.9";
 }
 
 static char** ListUSBDeviceNames(int *count)
@@ -2984,9 +2984,11 @@ int CheckSensor() {
                 if (((state >> i) & 0x01) == MLLow) {
                     DWORD errCode;
                     GetAxisErrCode(i+1, &errCode);
-//                    Logger(MLLogError, "<%s>: Servo {%d} alarm. (error code: 0x%lx)\n", __func__, i+1, errCode);
-//                    smc_emg_stop(gHandle);
-//                    gIsTesting = false;
+                    Logger(MLLogError, "<%s>: Servo {%d} alarm. (error code: 0x%lx)\n", __func__, i+1, errCode);
+                    memset(errmsg, 0, 256);
+                    sprintf(errmsg, "Servo {%d} alarm. (error code: 0x%lx)\n", i+1, errCode);
+                    smc_emg_stop(gHandle);
+                    gIsTesting = false;
 //                    return 1;
                 }
             }
