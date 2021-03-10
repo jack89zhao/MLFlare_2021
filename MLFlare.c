@@ -2727,7 +2727,7 @@ static bool SetOutputBitState(MLOutSensor outbit, MLLevel level)
                 break;
         }
     }
-    Logger(MLLogInfo, "<%s> set Bit[%d] to %d [result: %d]", __func__, outbit, level, flag);
+    Logger(MLLogInfo, "<%s> set Bit[%d] to %d [result: %d]\n", __func__, outbit, level, flag);
     
     return flag;
 }
@@ -4685,15 +4685,18 @@ double GetLuxmeter(string portName) {
         smc_write_outbit(gHandle, MLOutLaserPower, MLHigh);
         smc_write_outbit(gHandle, MLOutSpotPower, MLHigh);
         
+        // move light source axis to negative limit
+        JMoveAxisWithBlock(MLAxisLight, 0, false);
+        usleep(100*1000);
         int iostate = CheckAxisIOState(MLAxisLight);
-        
         if (iostate != 2) {
             Logger(MLLogError, "<%s>: Fail to move axis {%d} to negative limit.\n", __func__, MLAxisLight);
             return measValue;
         }
         
+        // move laser axis to negative limit
         JMoveAxisWithBlock(MLAxisLaser, 0, false);
-        
+        usleep(100*1000);
         if (CheckAxisIOState(MLAxisLaser) != 2) {
             Logger(MLLogError, "<%s>: Fail to move axis {%d} to negative limit.\n", __func__, MLAxisLaser);
             return measValue;
@@ -4757,7 +4760,7 @@ void LuxmeterMeasure(double measureValues[], int size, int timeout) {
     memset(measureValues, 0, 3);
     
     JKSetCL200ATimeout(timeout);
-    JKGetCL200AEvXY(&lv, &x, &y);
+    JKGetCL200AEvTcpDeltaUV(&lv, &x, &y);
     
     if (lv == 0) {
         measureValues[0] = 0;
@@ -4768,7 +4771,7 @@ void LuxmeterMeasure(double measureValues[], int size, int timeout) {
         measureValues[0] = lv;
         measureValues[1] = x;
         measureValues[2] = y;
-        Logger(MLLogInfo, "<%s>: Luxmeter measure value, Ev: %lf, x: %lf, y: %lf.\n", __func__, lv, x, y);
+        Logger(MLLogInfo, "<%s>: Luxmeter measure value, Ev: %lf, Tcp: %lf, Δuv: %lf.\n", __func__, lv, x, y);
     }
     
 //    return measureValues;

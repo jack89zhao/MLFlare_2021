@@ -126,6 +126,11 @@ void JKGetCL200AEvUV(float* Ev, float* u, float* v) {
     JKWriteCommandString("031200", Ev, u, v);
 }
 
+/* Measurement data can be read Ev, Tcp, delta uv*/
+void JKGetCL200AEvTcpDeltaUV(float *Ev, float *Tcp, float *deltaUV) {
+    JKWriteCommandString("081200", Ev, Tcp, deltaUV);
+}
+
 /* Measurement data can be read X, Y, Z values; EV, x', y' values; EV, u', v' values */
 void JKGetCL200AALL(float* XYZArray, float* EvXYArray, float* EvUVArray) {
     if (isConnected) {
