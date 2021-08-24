@@ -348,6 +348,7 @@ void Encoder(void);
 void SetEncoderUnit(void);
 void SetBitState(int bit, MLLevel level);
 MLLevel GetBitState(int bit);
+bool GetOutBitState(int bit);       // true is MLLow, high is MLHigh
 
 // get axis's param.
 AxisParam GetAxisParam(int axis);

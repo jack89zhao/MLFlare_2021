@@ -171,7 +171,7 @@ void ResetAllAxis(bool pthread);
 // ========================= private method ============================
 
 char* GetLibraryVersion(void) {
-    return "v1.2.9";
+    return "v1.3.0";
 }
 
 static char** ListUSBDeviceNames(int *count)
