@@ -99,7 +99,6 @@ double ReadXJCExisting(int fd, char* endStr) {
     
     if (fd > 0) {
         pthread_mutex_lock(&lock);
-        
         do {
             XJCSend(fd, 0);
             usleep(10000);
@@ -110,9 +109,10 @@ double ReadXJCExisting(int fd, char* endStr) {
             if (serial_data_available(fd, 100)) {
                 // 至少读取到20个字符
 //                do {
-                char tmpBuf[size/4];
-                memset(tmpBuf, 0, size/4);
-                serial_receive(fd, tmpBuf, size);
+                int tmpSize = size/4;
+                char tmpBuf[tmpSize];
+                memset(tmpBuf, 0, tmpSize);
+                serial_receive(fd, tmpBuf, tmpSize);
 //                    sprintf(buffer, "%s%s", buffer, tmpBuf);
                 strcat(buffer, tmpBuf);
 //                usleep(10000);

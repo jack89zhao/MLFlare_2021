@@ -2221,8 +2221,9 @@ void TAllAxisGoHome() {
         return;
     }
     if (isNeedEmgStop) { Logger(MLLogInfo, "<%s>: Emg stop.\n", __func__); return; }
-    JMoveAxisWithBlock(MLAxisLaser, 0, false);
     int axises2[] = {MLAxisLaser};
+    CheckAxisState(axises2, 1, false);
+    JMoveAxisWithBlock(MLAxisLaser, 0, false);
     CheckAxisState(axises2, 1, false);
 
     if (isNeedStop) {
@@ -2442,7 +2443,7 @@ void MoveToInitPos(int *axises, int count) {
         int axis = axises[i];
         AxisParam ap = gAxisPrm[axis];
         rtn = smc_pmove_unit(gHandle, axis, ap.posToInit, MLAbsolute);
-        Logger(MLLogInfo, "<%s>: Axis %d go to init position %d pluse, rtn: (%d}\n", __func__,  MLAxisRotation, -110, rtn);
+        Logger(MLLogInfo, "<%s>: Axis %d go to init position %d pluse, rtn: (%d}\n", __func__,  axis, ap.posToInit, rtn);
     }
 }
 
