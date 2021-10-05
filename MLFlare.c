@@ -911,11 +911,7 @@ int CheckAllLimitSensor() {
     return errorAxis;
 }
 
-/*
- *check the axis's specified IO
- *@return 0 -> Servo drive alarm, 1 -> positive limit, 2 -> negative limit, 3 -> EMG, 4 -> ORG
- */
-int CheckAxisIOState(int axis) {
+int CheckAxisIOStateWithLogState(int axis, bool logAll) {
     ASSERT_REPORT(axis >= 0);
     
     if (gHandle != -1) {
@@ -943,22 +939,22 @@ int CheckAxisIOState(int axis) {
                     } break;
                 case 1:
                     if (bit==1) {
-                        Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d Positive limit on.\n", axis);
+                        if(logAll) Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d Positive limit on.\n", axis);
                         return 1;
                     } break;
                 case 2:
                     if (bit==1) {
-                        Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d Negative limit on.\n", axis);
+                        if(logAll) Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d Negative limit on.\n", axis);
                         return 2;
                     } break;
                 case 3:
                     if (bit==1) {
-                        Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d EMG stop sensor is on.\n", axis);
+                        if(logAll) Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d EMG stop sensor is on.\n", axis);
                         return 3;
                     } break;
                 case 4:
                     if (bit==1) {
-                        Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d ORG sensor is on.\n", axis);
+                        if(logAll) Logger(MLLogInfo, "<CheckAxisIOState>: Axis %d ORG sensor is on.\n", axis);
                         return 4;
                     } break;
                 default: break;
@@ -968,6 +964,14 @@ int CheckAxisIOState(int axis) {
     }
     
     return 10;
+}
+
+/*
+ *check the axis's specified IO
+ *@return 0 -> Servo drive alarm, 1 -> positive limit, 2 -> negative limit, 3 -> EMG, 4 -> ORG
+ */
+int CheckAxisIOState(int axis) {
+    return CheckAxisIOStateWithLogState(axis, true);
 }
 
 AxisParam GetAxisParam(int axis) {
@@ -2095,7 +2099,7 @@ char *GetErrorMessage() {
             }
             
             for (int axis = 1; axis <= gAxisNum; axis++) {
-                int state = CheckAxisIOState(axis);
+                int state = CheckAxisIOStateWithLogState(axis, false);
                 
                 if (state == 0) {
                     DWORD errCode;
